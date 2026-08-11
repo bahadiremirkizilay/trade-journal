@@ -29,20 +29,19 @@ export default function Home() {
     const name = localStorage.getItem("traderName");
 
     if (!isAuth || !name) {
-      router.push("/login");
+      window.location.href = "/login";
       return;
     }
 
     setTraderName(name);
     loadTrades();
     setLoading(false);
-  }, [router, loadTrades]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleLogout() {
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("traderName");
-    router.push("/login");
-    router.refresh();
+    window.location.href = "/login";
   }
 
   if (loading || !traderName) {

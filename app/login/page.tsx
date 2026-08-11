@@ -17,8 +17,11 @@ export default function LoginPage() {
     
     localStorage.setItem("traderName", name.trim());
     localStorage.setItem("isAuthenticated", "true");
-    router.push("/");
-    router.refresh();
+    
+    // Force redirect
+    setTimeout(() => {
+      window.location.replace("/");
+    }, 100);
   }
 
   return (
@@ -41,7 +44,7 @@ export default function LoginPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full bg-[#0d1117] border border-[var(--border)] rounded-lg px-3 py-2 text-sm outline-none focus:border-[var(--accent)] transition-colors"
-              placeholder="Furkan"
+              placeholder="İsminizi yazın"
               autoFocus
             />
           </div>
