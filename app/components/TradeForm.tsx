@@ -24,7 +24,6 @@ export default function TradeForm({
     new Date().toISOString().slice(0, 16)
   );
   const [notes, setNotes] = useState("");
-  const [screenshotUrl, setScreenshotUrl] = useState("");
 
   function reset() {
     setSymbol("");
@@ -34,7 +33,6 @@ export default function TradeForm({
     setQuantity("");
     setEntryDate(new Date().toISOString().slice(0, 16));
     setNotes("");
-    setScreenshotUrl("");
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -65,7 +63,6 @@ export default function TradeForm({
       quantity: qty,
       entry_date: new Date(entryDate).toISOString(),
       notes: notes || null,
-      screenshot_url: screenshotUrl || null,
       status: exit !== null ? "closed" : "open",
       pnl,
     });
@@ -95,20 +92,20 @@ export default function TradeForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-[var(--panel)] border border-[var(--border)] rounded-xl p-5 space-y-4"
+      className="w-full bg-[var(--panel)] border border-[var(--border)] rounded-xl p-6 space-y-5"
     >
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium">Yeni işlem</h3>
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="text-base font-semibold">Yeni İşlem</h3>
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="text-[var(--muted)] text-sm hover:text-[var(--text)]"
+          className="text-[var(--muted)] text-sm hover:text-[var(--text)] transition-colors"
         >
-          Vazgeç
+          ✕
         </button>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div>
           <label className="block text-xs text-[var(--muted)] mb-1">Sembol</label>
           <input
@@ -178,42 +175,39 @@ export default function TradeForm({
         </div>
       </div>
 
-      <div>
-        <label className="block text-xs text-[var(--muted)] mb-1">
-          Görsel linki <span className="opacity-60">(opsiyonel)</span>
-        </label>
-        <input
-          value={screenshotUrl}
-          onChange={(e) => setScreenshotUrl(e.target.value)}
-          placeholder="https://..."
-          className="w-full bg-[#0d1117] border border-[var(--border)] rounded-lg px-3 py-2 text-sm outline-none focus:border-[var(--accent)]"
-        />
-      </div>
-
-      <div>
-        <label className="block text-xs text-[var(--muted)] mb-1">Not</label>
+      <div className="sm:col-span-2 lg:col-span-3">
+        <label className="block text-xs font-medium text-[var(--muted)] mb-1.5">Not <span className="opacity-60">(opsiyonel)</span></label>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          rows={2}
-          placeholder="Kurulum, sebep, ders..."
-          className="w-full bg-[#0d1117] border border-[var(--border)] rounded-lg px-3 py-2 text-sm outline-none focus:border-[var(--accent)] resize-none"
+          rows={3}
+          placeholder="Strateji, sebep, sonuç..."
+          className="w-full bg-[#0d1117] border border-[var(--border)] rounded-lg px-3 py-2.5 text-sm outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-all resize-none"
         />
       </div>
 
       {error && (
-        <p className="text-sm text-[var(--red)] bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg px-3 py-2">
-          {error}
-        </p>
+        <div className="bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg px-4 py-3">
+          <p className="text-sm text-[var(--red)]">{error}</p>
+        </div>
       )}
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="bg-[var(--accent)] text-[#0d1117] font-medium rounded-lg px-4 py-2 text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
-      >
-        {loading ? "Kaydediliyor..." : "Kaydet"}
-      </button>
+      <div className="flex gap-3 pt-2">
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          className="flex-1 bg-[var(--panel)] border border-[var(--border)] text-[var(--text)] font-medium rounded-lg py-2.5 text-sm hover:bg-[var(--border)] transition-colors"
+        >
+          İptal
+        </button>
+        <button
+          type="submit"
+          disabled={loading}
+          className="flex-1 bg-[var(--accent)] text-[#0d1117] font-semibold rounded-lg py-2.5 text-sm hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loading ? "Kaydediliyor..." : "Kaydet"}
+        </button>
+      </div>
     </form>
   );
 }

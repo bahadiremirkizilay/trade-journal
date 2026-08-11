@@ -9,7 +9,6 @@ export type Trade = {
   entry_date: string;
   exit_date: string | null;
   notes: string | null;
-  screenshot_url: string | null;
   status: "open" | "closed";
   pnl: number | null;
   created_at: string;

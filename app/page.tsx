@@ -58,46 +58,50 @@ export default function Home() {
     filter === "all" ? trades : trades.filter((t) => t.trader_name === filter);
 
   return (
-    <div className="min-h-screen max-w-6xl mx-auto px-4 sm:px-6 py-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="min-h-screen max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-10 pb-6 border-b border-[var(--border)]">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">Trade Journal</h1>
-          <p className="text-xs text-[var(--muted)] mt-0.5">{traderName}</p>
+          <h1 className="text-2xl font-bold tracking-tight mb-1">Trade Journal</h1>
+          <p className="text-sm text-[var(--muted)]">Giriş: <span className="text-[var(--text)] font-medium">{traderName}</span></p>
         </div>
         <button
           onClick={handleLogout}
-          className="text-sm text-[var(--muted)] hover:text-[var(--text)] transition-colors"
+          className="px-4 py-2 text-sm text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--panel)] rounded-lg border border-[var(--border)] transition-all"
         >
-          Çıkış yap
+          Çıkış
         </button>
       </div>
 
-      <div className="mb-6">
+      {/* Stats */}
+      <div className="mb-8">
         <StatsBar trades={filteredTrades} />
       </div>
 
-      <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
+      {/* Actions Bar */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
         <TradeForm traderName={traderName} onAdded={loadTrades} />
 
-        <div className="flex items-center gap-2 text-sm">
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-[var(--muted)] mr-2">Filtre:</span>
           <button
             onClick={() => setFilter("all")}
-            className={`px-3 py-1.5 rounded-lg border text-xs transition-colors ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               filter === "all"
-                ? "border-[var(--accent)] text-[var(--accent)]"
-                : "border-[var(--border)] text-[var(--muted)] hover:text-[var(--text)]"
+                ? "bg-[var(--accent)] text-[#0d1117]"
+                : "bg-[var(--panel)] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--accent)]/30"
             }`}
           >
-            Hepsi
+            Tümü
           </button>
           {uniqueTraders.map((name) => (
             <button
               key={name}
               onClick={() => setFilter(name)}
-              className={`px-3 py-1.5 rounded-lg border text-xs transition-colors ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 filter === name
-                  ? "border-[var(--accent)] text-[var(--accent)]"
-                  : "border-[var(--border)] text-[var(--muted)] hover:text-[var(--text)]"
+                  ? "bg-[var(--accent)] text-[#0d1117]"
+                  : "bg-[var(--panel)] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--accent)]/30"
               }`}
             >
               {name}
@@ -106,6 +110,7 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Trade Table */}
       <TradeTable trades={filteredTrades} traderName={traderName} onChanged={loadTrades} />
     </div>
   );

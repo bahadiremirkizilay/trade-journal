@@ -25,43 +25,54 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-semibold tracking-tight">Trade Journal</h1>
-          <p className="text-[var(--muted)] text-sm mt-1">Kim olduğunuzu seçin</p>
+    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-[#0d1117] to-[#161b22]">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-10">
+          <div className="mb-4">
+            <div className="w-16 h-16 bg-[var(--accent)] rounded-2xl mx-auto flex items-center justify-center">
+              <svg className="w-8 h-8 text-[#0d1117]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+          </div>
+          <h1 className="text-3xl font-bold tracking-tight mb-2">Trade Journal</h1>
+          <p className="text-[var(--muted)] text-sm">Profesyonel işlem takip sistemi</p>
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="bg-[var(--panel)] border border-[var(--border)] rounded-xl p-6 space-y-4"
+          className="bg-[var(--panel)] border border-[var(--border)] rounded-2xl p-8 shadow-xl"
         >
-          <div>
-            <label className="block text-xs text-[var(--muted)] mb-1.5">İsminiz</label>
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-[var(--text)] mb-2">İsminiz</label>
             <input
               type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full bg-[#0d1117] border border-[var(--border)] rounded-lg px-3 py-2 text-sm outline-none focus:border-[var(--accent)] transition-colors"
+              className="w-full bg-[#0d1117] border border-[var(--border)] rounded-xl px-4 py-3 text-sm outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20 transition-all"
               placeholder="İsminizi yazın"
               autoFocus
             />
           </div>
 
           {error && (
-            <p className="text-sm text-[var(--red)] bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg px-3 py-2">
-              {error}
-            </p>
+            <div className="mb-6 bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-xl px-4 py-3">
+              <p className="text-sm text-[var(--red)]">{error}</p>
+            </div>
           )}
 
           <button
             type="submit"
-            className="w-full bg-[var(--accent)] text-[#0d1117] font-medium rounded-lg py-2 text-sm hover:opacity-90 transition-opacity"
+            className="w-full bg-[var(--accent)] text-[#0d1117] font-semibold rounded-xl py-3 text-sm hover:opacity-90 transition-opacity shadow-lg shadow-[var(--accent)]/20"
           >
-            Giriş yap
+            Giriş Yap
           </button>
         </form>
+
+        <p className="text-center text-xs text-[var(--muted)] mt-6">
+          Tüm işlemler her iki kullanıcı tarafından görülebilir
+        </p>
       </div>
     </div>
   );

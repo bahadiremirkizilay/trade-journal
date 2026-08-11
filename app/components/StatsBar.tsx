@@ -21,14 +21,14 @@ export default function StatsBar({ trades }: { trades: Trade[] }) {
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       {stats.map((s) => (
         <div
           key={s.label}
-          className="bg-[var(--panel)] border border-[var(--border)] rounded-xl px-4 py-3"
+          className="bg-[var(--panel)] border border-[var(--border)] rounded-xl px-5 py-4 hover:border-[var(--accent)]/30 transition-colors"
         >
-          <div className="text-xs text-[var(--muted)] mb-1">{s.label}</div>
-          <div className={`text-xl font-semibold mono ${s.color ?? ""}`}>
+          <div className="text-xs font-medium text-[var(--muted)] uppercase tracking-wide mb-2">{s.label}</div>
+          <div className={`text-2xl font-bold mono ${s.color ?? ""}`}>
             {s.value}
           </div>
         </div>

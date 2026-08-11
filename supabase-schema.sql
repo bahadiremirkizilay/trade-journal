@@ -2,7 +2,7 @@
 
 create table if not exists public.trades (
   id uuid primary key default gen_random_uuid(),
-  trader_name text not null, -- "Furkan", "Ortak", vb.
+  trader_name text not null,
   symbol text not null,
   direction text not null check (direction in ('long', 'short')),
   entry_price numeric not null,
@@ -11,7 +11,6 @@ create table if not exists public.trades (
   entry_date timestamptz not null default now(),
   exit_date timestamptz,
   notes text,
-  screenshot_url text,
   status text not null default 'open' check (status in ('open', 'closed')),
   pnl numeric,
   created_at timestamptz not null default now()
