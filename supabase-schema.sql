@@ -8,9 +8,12 @@ create table if not exists public.trades (
   entry_price numeric not null,
   exit_price numeric,
   quantity numeric not null,
+  take_profit numeric,
+  stop_loss numeric,
   entry_date timestamptz not null default now(),
   exit_date timestamptz,
   notes text,
+  image_url text,
   status text not null default 'open' check (status in ('open', 'closed')),
   pnl numeric,
   created_at timestamptz not null default now()

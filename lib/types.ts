@@ -11,5 +11,8 @@ export type Trade = {
   notes: string | null;
   status: "open" | "closed";
   pnl: number | null;
+  take_profit: number | null;
+  stop_loss: number | null;
+  image_url: string | null;
   created_at: string;
 };
