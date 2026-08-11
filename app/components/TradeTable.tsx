@@ -108,7 +108,6 @@ export default function TradeTable({
                   {t.notes || "—"}
                 </td>
                 <td className="px-5 py-4 text-right">
-                  <td className="px-5 py-4 text-right">
                   {t.trader_name === traderName && (
                     <button
                       onClick={() => handleDelete(t.id)}
