@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0d1117;
+  --panel: #151b23;
+  --border: #262d38;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --green: #3fb950;
+  --red: #f85149;
+  --accent: #58a6ff;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+.mono {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
