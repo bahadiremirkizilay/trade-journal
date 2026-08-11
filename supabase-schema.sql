@@ -5,17 +5,11 @@ create table if not exists public.trades (
   trader_name text not null,
   symbol text not null,
   direction text not null check (direction in ('long', 'short')),
-  entry_price numeric not null,
-  exit_price numeric,
-  quantity numeric not null,
-  take_profit numeric,
-  stop_loss numeric,
-  entry_date timestamptz not null default now(),
-  exit_date timestamptz,
-  notes text,
+  risk_percent numeric not null,
+  risk_reward numeric not null,
+  result text not null check (result in ('win', 'loss', 'breakeven')),
   image_url text,
-  status text not null default 'open' check (status in ('open', 'closed')),
-  pnl numeric,
+  trade_date timestamptz not null default now(),
   created_at timestamptz not null default now()
 );
 
@@ -23,4 +17,4 @@ create table if not exists public.trades (
 alter table public.trades disable row level security;
 
 create index if not exists trades_trader_name_idx on public.trades(trader_name);
-create index if not exists trades_entry_date_idx on public.trades(entry_date desc);
+create index if not exists trades_trade_date_idx on public.trades(trade_date desc);

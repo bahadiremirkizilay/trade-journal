@@ -54,17 +54,13 @@ export default function TradeTable({
             <thead className="bg-[var(--border)]/30">
               <tr className="border-b border-[var(--border)]">
                 <th className="px-5 py-4 text-left text-xs font-semibold text-[var(--text)] uppercase tracking-wider">Trader</th>
-                <th className="px-5 py-4 text-left text-xs font-semibold text-[var(--text)] uppercase tracking-wider">Sembol</th>
-                <th className="px-5 py-4 text-left text-xs font-semibold text-[var(--text)] uppercase tracking-wider">Yön</th>
-                <th className="px-5 py-4 text-right text-xs font-semibold text-[var(--text)] uppercase tracking-wider">Giriş</th>
-                <th className="px-5 py-4 text-right text-xs font-semibold text-[var(--text)] uppercase tracking-wider">TP</th>
-                <th className="px-5 py-4 text-right text-xs font-semibold text-[var(--text)] uppercase tracking-wider">SL</th>
-                <th className="px-5 py-4 text-right text-xs font-semibold text-[var(--text)] uppercase tracking-wider">Çıkış</th>
-                <th className="px-5 py-4 text-right text-xs font-semibold text-[var(--text)] uppercase tracking-wider">Miktar</th>
-                <th className="px-5 py-4 text-right text-xs font-semibold text-[var(--text)] uppercase tracking-wider">P&L</th>
+                <th className="px-5 py-4 text-left text-xs font-semibold text-[var(--text)] uppercase tracking-wider">Parite</th>
+                <th className="px-5 py-4 text-center text-xs font-semibold text-[var(--text)] uppercase tracking-wider">Yön</th>
+                <th className="px-5 py-4 text-right text-xs font-semibold text-[var(--text)] uppercase tracking-wider">Risk %</th>
+                <th className="px-5 py-4 text-right text-xs font-semibold text-[var(--text)] uppercase tracking-wider">RR</th>
+                <th className="px-5 py-4 text-center text-xs font-semibold text-[var(--text)] uppercase tracking-wider">Sonuç</th>
                 <th className="px-5 py-4 text-center text-xs font-semibold text-[var(--text)] uppercase tracking-wider">Grafik</th>
                 <th className="px-5 py-4 text-left text-xs font-semibold text-[var(--text)] uppercase tracking-wider">Tarih</th>
-                <th className="px-5 py-4 text-left text-xs font-semibold text-[var(--text)] uppercase tracking-wider">Not</th>
                 <th className="px-5 py-4 text-right text-xs font-semibold text-[var(--text)] uppercase tracking-wider">İşlem</th>
               </tr>
             </thead>
@@ -80,55 +76,46 @@ export default function TradeTable({
                     </span>
                   </td>
                   <td className="px-5 py-4">
-                    <span className="font-bold mono text-[var(--text)]">{t.symbol}</span>
+                    <span className="font-bold mono text-[var(--text)] text-base">{t.symbol}</span>
                   </td>
-                  <td className="px-5 py-4">
+                  <td className="px-5 py-4 text-center">
                     <span
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                      className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold ${
                         t.direction === "long"
                           ? "bg-[var(--green)]/15 text-[var(--green)]"
                           : "bg-[var(--red)]/15 text-[var(--red)]"
                       }`}
                     >
-                      {t.direction === "long" ? "LONG" : "SHORT"}
+                      {t.direction === "long" ? "🟢 LONG" : "🔴 SHORT"}
                     </span>
                   </td>
-                  <td className="px-5 py-4 mono text-right font-medium text-[var(--text)]">{t.entry_price}</td>
-                  <td className="px-5 py-4 mono text-right text-xs">
-                    {t.take_profit ? (
-                      <span className="text-[var(--green)]">{t.take_profit}</span>
-                    ) : (
-                      <span className="text-[var(--muted)]">—</span>
+                  <td className="px-5 py-4 mono text-right font-medium text-[var(--text)]">{t.risk_percent}%</td>
+                  <td className="px-5 py-4 mono text-right font-medium text-[var(--accent)]">{t.risk_reward}R</td>
+                  <td className="px-5 py-4 text-center">
+                    {t.result === "win" && (
+                      <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-[var(--green)]/15 text-[var(--green)]">
+                        ✅ WIN
+                      </span>
                     )}
-                  </td>
-                  <td className="px-5 py-4 mono text-right text-xs">
-                    {t.stop_loss ? (
-                      <span className="text-[var(--red)]">{t.stop_loss}</span>
-                    ) : (
-                      <span className="text-[var(--muted)]">—</span>
+                    {t.result === "loss" && (
+                      <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-[var(--red)]/15 text-[var(--red)]">
+                        ❌ LOSS
+                      </span>
                     )}
-                  </td>
-                  <td className="px-5 py-4 mono text-right font-medium text-[var(--text)]">{t.exit_price ?? "—"}</td>
-                  <td className="px-5 py-4 mono text-right text-[var(--text)]">{t.quantity}</td>
-                  <td
-                    className={`px-5 py-4 mono text-right font-bold ${
-                      t.pnl == null
-                        ? "text-[var(--muted)]"
-                        : t.pnl >= 0
-                        ? "text-[var(--green)]"
-                        : "text-[var(--red)]"
-                    }`}
-                  >
-                    {t.pnl == null ? "Açık" : (t.pnl >= 0 ? "+" : "") + t.pnl.toFixed(2)}
+                    {t.result === "breakeven" && (
+                      <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-[var(--muted)]/15 text-[var(--muted)]">
+                        ➖ BE
+                      </span>
+                    )}
                   </td>
                   <td className="px-5 py-4 text-center">
                     {t.image_url ? (
                       <button
                         onClick={() => setSelectedImage(t.image_url)}
-                        className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-[var(--accent)]/10 hover:bg-[var(--accent)]/20 transition-colors"
+                        className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-[var(--accent)]/10 hover:bg-[var(--accent)]/20 transition-colors"
                         title="Grafiği görüntüle"
                       >
-                        <svg className="w-4 h-4 text-[var(--accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-5 h-5 text-[var(--accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                       </button>
@@ -137,10 +124,7 @@ export default function TradeTable({
                     )}
                   </td>
                   <td className="px-5 py-4 text-xs text-[var(--muted)] whitespace-nowrap">
-                    {formatDate(t.entry_date)}
-                  </td>
-                  <td className="px-5 py-4 text-xs text-[var(--muted)] max-w-[250px] truncate" title={t.notes || ""}>
-                    {t.notes || "—"}
+                    {formatDate(t.trade_date)}
                   </td>
                   <td className="px-5 py-4 text-right">
                     {t.trader_name === traderName && (
