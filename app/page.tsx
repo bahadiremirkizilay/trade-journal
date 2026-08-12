@@ -20,7 +20,7 @@ export default function Home() {
     const { data } = await supabase
       .from("trades")
       .select("*")
-      .order("entry_date", { ascending: false });
+      .order("trade_date", { ascending: false });
     setTrades((data as Trade[]) ?? []);
   }, [supabase]);
 
