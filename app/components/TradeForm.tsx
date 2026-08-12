@@ -264,16 +264,16 @@ export default function TradeForm({
 
         {/* Image Previews */}
         {(imagePreviews.length > 0 || imageUrls.length > 0) && (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {imagePreviews.map((preview, idx) => (
               <div key={`preview-${idx}`} className="relative group">
-                <img src={preview} alt={`Preview ${idx + 1}`} className="w-full h-32 object-cover rounded-lg border border-[var(--border)]" />
+                <img src={preview} alt={`Preview ${idx + 1}`} className="w-full h-64 object-contain bg-[#0d1117] rounded-lg border border-[var(--border)]" />
                 <button
                   type="button"
                   onClick={() => {
                     setImagePreviews((prev) => prev.filter((_, i) => i !== idx));
                   }}
-                  className="absolute top-2 right-2 bg-[var(--red)] text-white rounded-full w-7 h-7 flex items-center justify-center text-sm hover:bg-[var(--red)]/80 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute top-2 right-2 bg-[var(--red)] text-white rounded-full w-8 h-8 flex items-center justify-center text-sm hover:bg-[var(--red)]/80 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
                 >
                   ✕
                 </button>
@@ -284,7 +284,7 @@ export default function TradeForm({
                 <img 
                   src={url} 
                   alt={`URL ${idx + 1}`} 
-                  className="w-full h-32 object-cover rounded-lg border border-[var(--border)]" 
+                  className="w-full h-64 object-contain bg-[#0d1117] rounded-lg border border-[var(--border)]" 
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = 'none';
                   }} 
@@ -294,7 +294,7 @@ export default function TradeForm({
                   onClick={() => {
                     setImageUrls((prev) => prev.filter((_, i) => i !== idx));
                   }}
-                  className="absolute top-2 right-2 bg-[var(--red)] text-white rounded-full w-7 h-7 flex items-center justify-center text-sm hover:bg-[var(--red)]/80 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute top-2 right-2 bg-[var(--red)] text-white rounded-full w-8 h-8 flex items-center justify-center text-sm hover:bg-[var(--red)]/80 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
                 >
                   ✕
                 </button>
