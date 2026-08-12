@@ -20,6 +20,7 @@ export default function TradeForm({
   const [riskPercent, setRiskPercent] = useState("");
   const [riskReward, setRiskReward] = useState("");
   const [result, setResult] = useState<"win" | "loss" | "breakeven">("win");
+  const [tradeDate, setTradeDate] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -30,6 +31,7 @@ export default function TradeForm({
     setRiskPercent("");
     setRiskReward("");
     setResult("win");
+    setTradeDate("");
     setImageUrl("");
     setImageFile(null);
     setImagePreview(null);
@@ -79,6 +81,9 @@ export default function TradeForm({
     // Use imageUrl if provided, otherwise use imagePreview (from paste/file)
     const finalImageUrl = imageUrl.trim() || imagePreview || null;
 
+    // Use selected date or current date
+    const finalDate = tradeDate || new Date().toISOString();
+
     setLoading(true);
     const { error: insertError } = await supabase.from("trades").insert({
       trader_name: traderName,
@@ -88,7 +93,7 @@ export default function TradeForm({
       risk_reward: rr,
       result,
       image_url: finalImageUrl,
-      trade_date: new Date().toISOString(),
+      trade_date: finalDate,
     });
     setLoading(false);
 
@@ -169,7 +174,7 @@ export default function TradeForm({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
         <div>
           <label className="block text-xs font-medium text-[var(--text)] mb-2">Risk %</label>
           <input
@@ -195,7 +200,18 @@ export default function TradeForm({
             required
             className="w-full bg-[#0d1117] border border-[var(--border)] rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20 transition-all"
           />
-          <p className="text-xs text-[var(--muted)] mt-1.5">Risk/Reward oranı (örn: 2.0)</p>
+          <p className="text-xs text-[var(--muted)] mt-1.5">Risk/Reward oranı</p>
+        </div>
+
+        <div>
+          <label className="block text-xs font-medium text-[var(--text)] mb-2">Tarih</label>
+          <input
+            type="datetime-local"
+            value={tradeDate}
+            onChange={(e) => setTradeDate(e.target.value)}
+            className="w-full bg-[#0d1117] border border-[var(--border)] rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20 transition-all"
+          />
+          <p className="text-xs text-[var(--muted)] mt-1.5">Boş bırakılırsa şimdi</p>
         </div>
       </div>
 
