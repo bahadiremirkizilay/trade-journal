@@ -24,7 +24,8 @@ export default function TradeTable({
   onChanged: () => void;
 }) {
   const supabase = createClient();
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImages, setSelectedImages] = useState<string[] | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   async function handleDelete(id: string) {
     if (!confirm("Bu işlemi silmek istediğine emin misin?")) return;
@@ -109,15 +110,19 @@ export default function TradeTable({
                     )}
                   </td>
                   <td className="px-5 py-4 text-center">
-                    {t.image_url ? (
+                    {t.images && t.images.length > 0 ? (
                       <button
-                        onClick={() => setSelectedImage(t.image_url)}
-                        className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-[var(--accent)]/10 hover:bg-[var(--accent)]/20 transition-colors"
-                        title="Grafiği görüntüle"
+                        onClick={() => {
+                          setSelectedImages(t.images!);
+                          setCurrentImageIndex(0);
+                        }}
+                        className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--accent)]/10 hover:bg-[var(--accent)]/20 transition-colors"
+                        title="Grafikleri görüntüle"
                       >
-                        <svg className="w-5 h-5 text-[var(--accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-4 h-4 text-[var(--accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
+                        <span className="text-xs font-medium text-[var(--accent)]">{t.images.length}</span>
                       </button>
                     ) : (
                       <span className="text-[var(--muted)] text-xs">—</span>
@@ -144,26 +149,63 @@ export default function TradeTable({
       </div>
 
       {/* Image Modal */}
-      {selectedImage && (
+      {selectedImages && selectedImages.length > 0 && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
-          onClick={() => setSelectedImage(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
+          onClick={() => {
+            setSelectedImages(null);
+            setCurrentImageIndex(0);
+          }}
         >
-          <div className="relative max-w-6xl max-h-[90vh] w-full">
+          <div className="relative max-w-6xl max-h-[90vh] w-full" onClick={(e) => e.stopPropagation()}>
+            {/* Close button */}
             <button
-              onClick={() => setSelectedImage(null)}
-              className="absolute -top-12 right-0 text-white hover:text-[var(--accent)] transition-colors"
+              onClick={() => {
+                setSelectedImages(null);
+                setCurrentImageIndex(0);
+              }}
+              className="absolute -top-12 right-0 text-white hover:text-[var(--accent)] transition-colors z-10"
             >
               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
+
+            {/* Navigation arrows */}
+            {selectedImages.length > 1 && (
+              <>
+                <button
+                  onClick={() => setCurrentImageIndex((prev) => (prev === 0 ? selectedImages.length - 1 : prev - 1))}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full w-12 h-12 flex items-center justify-center transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => setCurrentImageIndex((prev) => (prev === selectedImages.length - 1 ? 0 : prev + 1))}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full w-12 h-12 flex items-center justify-center transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </>
+            )}
+
+            {/* Image */}
             <img
-              src={selectedImage}
-              alt="Trade Chart"
+              src={selectedImages[currentImageIndex]}
+              alt={`Chart ${currentImageIndex + 1}`}
               className="w-full h-full object-contain rounded-lg"
-              onClick={(e) => e.stopPropagation()}
             />
+
+            {/* Counter */}
+            {selectedImages.length > 1 && (
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full text-sm font-medium">
+                {currentImageIndex + 1} / {selectedImages.length}
+              </div>
+            )}
           </div>
         </div>
       )}

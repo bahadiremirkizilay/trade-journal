@@ -8,7 +8,7 @@ create table if not exists public.trades (
   risk_percent numeric not null,
   risk_reward numeric not null,
   result text not null check (result in ('win', 'loss', 'breakeven')),
-  image_url text,
+  images text[],
   trade_date timestamptz not null default now(),
   created_at timestamptz not null default now()
 );
