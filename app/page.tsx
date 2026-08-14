@@ -7,6 +7,7 @@ import type { Trade } from "@/lib/types";
 import TradeForm from "./components/TradeForm";
 import TradeTable from "./components/TradeTable";
 import StatsBar from "./components/StatsBar";
+import TraderStatsModal from "./components/TraderStatsModal";
 
 export default function Home() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function Home() {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [filter, setFilter] = useState<"all" | string>("all");
   const [loading, setLoading] = useState(true);
+  const [statsTrader, setStatsTrader] = useState<string | null>(null);
 
   const loadTrades = useCallback(async () => {
     const { data } = await supabase
@@ -95,23 +97,46 @@ export default function Home() {
             Tümü
           </button>
           {uniqueTraders.map((name) => (
-            <button
-              key={name}
-              onClick={() => setFilter(name)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                filter === name
-                  ? "bg-[var(--accent)] text-[#0d1117]"
-                  : "bg-[var(--panel)] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--accent)]/30"
-              }`}
-            >
-              {name}
-            </button>
+            <div key={name} className="flex items-center gap-1">
+              <button
+                onClick={() => setFilter(name)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  filter === name
+                    ? "bg-[var(--accent)] text-[#0d1117]"
+                    : "bg-[var(--panel)] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--accent)]/30"
+                }`}
+              >
+                {name}
+              </button>
+              <button
+                onClick={() => setStatsTrader(name)}
+                title={`${name} için istatistikler`}
+                className="p-2 rounded-lg bg-[var(--panel)] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 transition-all"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 3v18h18M8 17V10m5 7V6m5 11v-4"
+                  />
+                </svg>
+              </button>
+            </div>
           ))}
         </div>
       </div>
 
       {/* Trade Table */}
       <TradeTable trades={filteredTrades} traderName={traderName} onChanged={loadTrades} />
+
+      {statsTrader && (
+        <TraderStatsModal
+          traderName={statsTrader}
+          trades={trades.filter((t) => t.trader_name === statsTrader)}
+          onClose={() => setStatsTrader(null)}
+        />
+      )}
     </div>
   );
 }
