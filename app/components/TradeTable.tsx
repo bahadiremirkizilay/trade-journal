@@ -14,6 +14,13 @@ function formatDate(d: string) {
   });
 }
 
+function toDatetimeLocal(d: string) {
+  const date = new Date(d);
+  const offset = date.getTimezoneOffset();
+  const local = new Date(date.getTime() - offset * 60000);
+  return local.toISOString().slice(0, 16);
+}
+
 export default function TradeTable({
   trades,
   traderName,
@@ -26,10 +33,40 @@ export default function TradeTable({
   const supabase = createClient();
   const [selectedImages, setSelectedImages] = useState<string[] | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editDate, setEditDate] = useState("");
+  const [editNote, setEditNote] = useState("");
+  const [saving, setSaving] = useState(false);
 
   async function handleDelete(id: string) {
     if (!confirm("Bu işlemi silmek istediğine emin misin?")) return;
     await supabase.from("trades").delete().eq("id", id);
+    onChanged();
+  }
+
+  function startEdit(t: Trade) {
+    setEditingId(t.id);
+    setEditDate(toDatetimeLocal(t.trade_date));
+    setEditNote(t.note ?? "");
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setEditDate("");
+    setEditNote("");
+  }
+
+  async function handleSaveEdit(id: string) {
+    setSaving(true);
+    await supabase
+      .from("trades")
+      .update({
+        trade_date: editDate ? new Date(editDate).toISOString() : undefined,
+        note: editNote.trim() || null,
+      })
+      .eq("id", id);
+    setSaving(false);
+    cancelEdit();
     onChanged();
   }
 
@@ -62,6 +99,7 @@ export default function TradeTable({
                 <th className="px-5 py-4 text-center text-xs font-semibold text-[var(--text)] uppercase tracking-wider">Sonuç</th>
                 <th className="px-5 py-4 text-center text-xs font-semibold text-[var(--text)] uppercase tracking-wider">Grafik</th>
                 <th className="px-5 py-4 text-left text-xs font-semibold text-[var(--text)] uppercase tracking-wider">Tarih</th>
+                <th className="px-5 py-4 text-left text-xs font-semibold text-[var(--text)] uppercase tracking-wider">Not</th>
                 <th className="px-5 py-4 text-right text-xs font-semibold text-[var(--text)] uppercase tracking-wider">İşlem</th>
               </tr>
             </thead>
@@ -129,16 +167,67 @@ export default function TradeTable({
                     )}
                   </td>
                   <td className="px-5 py-4 text-xs text-[var(--muted)] whitespace-nowrap">
-                    {formatDate(t.trade_date)}
+                    {editingId === t.id ? (
+                      <input
+                        type="datetime-local"
+                        value={editDate}
+                        onChange={(e) => setEditDate(e.target.value)}
+                        className="bg-[#0d1117] border border-[var(--border)] rounded-lg px-2 py-1.5 text-xs outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20"
+                      />
+                    ) : (
+                      formatDate(t.trade_date)
+                    )}
+                  </td>
+                  <td className="px-5 py-4 text-xs text-[var(--muted)] max-w-[220px]">
+                    {editingId === t.id ? (
+                      <textarea
+                        value={editNote}
+                        onChange={(e) => setEditNote(e.target.value)}
+                        placeholder="Kendime not..."
+                        rows={2}
+                        className="w-full bg-[#0d1117] border border-[var(--border)] rounded-lg px-2 py-1.5 text-xs outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20 resize-none"
+                      />
+                    ) : t.note ? (
+                      <span className="whitespace-pre-wrap break-words" title={t.note}>{t.note}</span>
+                    ) : (
+                      <span className="text-[var(--muted)]">—</span>
+                    )}
                   </td>
                   <td className="px-5 py-4 text-right">
                     {t.trader_name === traderName && (
-                      <button
-                        onClick={() => handleDelete(t.id)}
-                        className="px-3 py-1.5 text-xs font-medium text-[var(--red)] hover:bg-[var(--red)]/10 rounded-lg transition-colors"
-                      >
-                        Sil
-                      </button>
+                      editingId === t.id ? (
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={cancelEdit}
+                            disabled={saving}
+                            className="px-3 py-1.5 text-xs font-medium text-[var(--muted)] hover:bg-[var(--border)]/30 rounded-lg transition-colors disabled:opacity-50"
+                          >
+                            İptal
+                          </button>
+                          <button
+                            onClick={() => handleSaveEdit(t.id)}
+                            disabled={saving}
+                            className="px-3 py-1.5 text-xs font-medium text-[var(--accent)] hover:bg-[var(--accent)]/10 rounded-lg transition-colors disabled:opacity-50"
+                          >
+                            {saving ? "Kaydediliyor..." : "Kaydet"}
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => startEdit(t)}
+                            className="px-3 py-1.5 text-xs font-medium text-[var(--accent)] hover:bg-[var(--accent)]/10 rounded-lg transition-colors"
+                          >
+                            Düzenle
+                          </button>
+                          <button
+                            onClick={() => handleDelete(t.id)}
+                            className="px-3 py-1.5 text-xs font-medium text-[var(--red)] hover:bg-[var(--red)]/10 rounded-lg transition-colors"
+                          >
+                            Sil
+                          </button>
+                        </div>
+                      )
                     )}
                   </td>
                 </tr>

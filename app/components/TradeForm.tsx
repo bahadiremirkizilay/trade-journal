@@ -21,6 +21,7 @@ export default function TradeForm({
   const [riskReward, setRiskReward] = useState("");
   const [result, setResult] = useState<"win" | "loss" | "breakeven">("win");
   const [tradeDate, setTradeDate] = useState("");
+  const [note, setNote] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
@@ -31,6 +32,7 @@ export default function TradeForm({
     setRiskReward("");
     setResult("win");
     setTradeDate("");
+    setNote("");
     setImageUrls([]);
     setImagePreviews([]);
   }
@@ -95,6 +97,7 @@ export default function TradeForm({
       risk_reward: rr,
       result,
       images: finalImages,
+      note: note.trim() || null,
       trade_date: finalDate,
     });
     setLoading(false);
@@ -215,6 +218,17 @@ export default function TradeForm({
           />
           <p className="text-xs text-[var(--muted)] mt-1.5">Boş bırakılırsa şimdi</p>
         </div>
+      </div>
+
+      <div className="mb-5">
+        <label className="block text-xs font-medium text-[var(--text)] mb-2">Kendime Not</label>
+        <textarea
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder="Bu işlemle ilgili kendine not bırak..."
+          rows={2}
+          className="w-full bg-[#0d1117] border border-[var(--border)] rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20 resize-none transition-all"
+        />
       </div>
 
       {/* Image Upload Section */}

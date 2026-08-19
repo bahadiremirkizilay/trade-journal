@@ -7,6 +7,7 @@ export type Trade = {
   risk_reward: number;
   result: "win" | "loss" | "breakeven";
   images: string[] | null;
+  note: string | null;
   trade_date: string;
   created_at: string;
 };

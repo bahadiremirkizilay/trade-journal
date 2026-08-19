@@ -9,9 +9,13 @@ create table if not exists public.trades (
   risk_reward numeric not null,
   result text not null check (result in ('win', 'loss', 'breakeven')),
   images text[],
+  note text,
   trade_date timestamptz not null default now(),
   created_at timestamptz not null default now()
 );
+
+-- Eğer tablo daha önce oluşturulduysa, not kolonunu eklemek için:
+alter table public.trades add column if not exists note text;
 
 -- RLS'e gerek yok, herkes her şeyi görebilir/ekleyebilir
 alter table public.trades disable row level security;
