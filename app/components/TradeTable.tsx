@@ -37,6 +37,7 @@ export default function TradeTable({
   const [editDate, setEditDate] = useState("");
   const [editNote, setEditNote] = useState("");
   const [saving, setSaving] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
 
   async function handleDelete(id: string) {
     if (!confirm("Bu işlemi silmek istediğine emin misin?")) return;
@@ -48,17 +49,20 @@ export default function TradeTable({
     setEditingId(t.id);
     setEditDate(toDatetimeLocal(t.trade_date));
     setEditNote(t.note ?? "");
+    setEditError(null);
   }
 
   function cancelEdit() {
     setEditingId(null);
     setEditDate("");
     setEditNote("");
+    setEditError(null);
   }
 
   async function handleSaveEdit(id: string) {
     setSaving(true);
-    await supabase
+    setEditError(null);
+    const { error } = await supabase
       .from("trades")
       .update({
         trade_date: editDate ? new Date(editDate).toISOString() : undefined,
@@ -66,6 +70,12 @@ export default function TradeTable({
       })
       .eq("id", id);
     setSaving(false);
+
+    if (error) {
+      setEditError("Kaydedilemedi: " + error.message);
+      return;
+    }
+
     cancelEdit();
     onChanged();
   }
@@ -180,13 +190,18 @@ export default function TradeTable({
                   </td>
                   <td className="px-5 py-4 text-xs text-[var(--muted)] max-w-[220px]">
                     {editingId === t.id ? (
-                      <textarea
-                        value={editNote}
-                        onChange={(e) => setEditNote(e.target.value)}
-                        placeholder="Kendime not..."
-                        rows={2}
-                        className="w-full bg-[#0d1117] border border-[var(--border)] rounded-lg px-2 py-1.5 text-xs outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20 resize-none"
-                      />
+                      <>
+                        <textarea
+                          value={editNote}
+                          onChange={(e) => setEditNote(e.target.value)}
+                          placeholder="Kendime not..."
+                          rows={2}
+                          className="w-full bg-[#0d1117] border border-[var(--border)] rounded-lg px-2 py-1.5 text-xs outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20 resize-none"
+                        />
+                        {editError && (
+                          <p className="text-[var(--red)] text-xs mt-1">{editError}</p>
+                        )}
+                      </>
                     ) : t.note ? (
                       <span className="whitespace-pre-wrap break-words" title={t.note}>{t.note}</span>
                     ) : (
